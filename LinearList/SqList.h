@@ -5,13 +5,11 @@
 
 typedef int Element;
 
-struct SqList {
+typedef struct{
     Element * data; // 动态的分配顺序表的指针
     int length;  // 顺序表的表长
     int MaxSize;
-};
-
-typedef struct SqList * SqNode; // 将顺序表的指针变量命名为SqNode
+}SqList, * SqNode;
 
 _Bool InitList(SqNode list) // 初始化顺序表
 {
@@ -35,13 +33,32 @@ void IncreaseList(SqNode list, int len) // 增加表长
     free(p); // 释放空间
 }
 
-void InsertList(SqNode list, Element e, int index)  // 在顺序表list的index位置插入数据e
+int InsertList(SqNode list, Element e, int index)  // 插入操作
 {
-    for (int i = list->length; i > index - 1; --i) {
-        list->data[i] = list->data[i - 1];
+    // 判断index的范围是否有效
+    if (index < 1 || index > list->length + 1)
+        return 0;
+    // 判读能否插入
+    if (list->length >= list->MaxSize)
+        return 0;
+
+    for (int j = list->length; j > index; --j) {
+        list->data[j] = list->data[j-1];
     }
+
     list->data[index -1] = e;
     list->length++;
+    return 1;
+}
+
+int LocateElem(SqNode list, Element e) // 按值查找
+{
+    for (int i = 0; i < list->length; ++i) {
+        if (list->data[i] == e){
+            return i;
+        }
+    }
+    return 0;
 }
 
 _Bool GetElem(SqNode list, int index)  // 查询顺序表list的index位置元素
